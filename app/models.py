@@ -20,6 +20,7 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
+# Functions for clients
 def get_all_clients():
     db = get_db()
     cursor = db.cursor(dictionary=True)

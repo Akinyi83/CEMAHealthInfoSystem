@@ -13,7 +13,7 @@ def api_get_clients():
     clients = get_all_clients()
     return jsonify(clients), 200
 
-@api_routes.route('/clients', methods=['POST'])
+@api_routes.route('/create_clients', methods=['POST'])
 def api_add_client():
     data = request.get_json()
     first_name = data.get('first_name')

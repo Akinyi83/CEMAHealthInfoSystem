@@ -4,8 +4,8 @@ from flask import Flask
 app = Flask(__name__)
 app.config['DB_HOST'] = 'localhost'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'Akinyi83!'
-app.config['DB_NAME'] = 'cemahealth_info_system'
+app.config['DB_PASSWORD'] = 'password'
+app.config['DB_NAME'] = 'cema_health_system'
 
 with app.app_context():
     print("Fetching all clients:")
