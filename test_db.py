@@ -1,11 +1,18 @@
 from app.models import get_all_clients, add_client
 from flask import Flask
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env
+load_dotenv()
 
 app = Flask(__name__)
-app.config['DB_HOST'] = 'localhost'
-app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'password'
-app.config['DB_NAME'] = 'cema_health_system'
+
+# Use environment variables
+app.config['DB_HOST'] = os.getenv('DB_HOST')
+app.config['DB_USER'] = os.getenv('DB_USER')
+app.config['DB_PASSWORD'] = os.getenv('DB_PASSWORD')
+app.config['DB_NAME'] = os.getenv('DB_NAME')
 
 with app.app_context():
     print("Fetching all clients:")
