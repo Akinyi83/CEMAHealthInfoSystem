@@ -1,8 +1,7 @@
 from flask import Flask
-import mysql.connector
-from .routes import client_routes
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+from .routes import client_routes
 
 def create_app():
     app = Flask(__name__)

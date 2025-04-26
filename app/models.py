@@ -1,5 +1,5 @@
-import mysql.connector
 from flask import current_app, g
+import mysql.connector
 
 def get_db():
     if 'db' not in g:
@@ -20,7 +20,6 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
-# Functions for clients
 def get_all_clients():
     db = get_db()
     cursor = db.cursor(dictionary=True)
@@ -38,3 +37,22 @@ def add_client(first_name, last_name, email):
     )
     db.commit()
     cursor.close()
+
+def add_health_program(program_name, description):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "INSERT INTO health_programs (program_name, description) VALUES (%s, %s)",
+        (program_name, description)
+    )
+    db.commit()
+    cursor.close()
+
+ # endpoint to list all health programs  
+def get_all_health_programs():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM health_programs")
+    programs = cursor.fetchall()
+    cursor.close()
+    return programs

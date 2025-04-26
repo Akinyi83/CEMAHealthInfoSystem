@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request, render_template
-from .models import get_all_clients, add_client
+from .models import get_all_clients, add_client, add_health_program
+from app.models import get_all_health_programs 
+#from app.db import get_db_connection
 
 client_routes = Blueprint('client_routes', __name__)
 
@@ -28,3 +30,38 @@ def api_add_client():
             return jsonify({'error': str(e)}), 500
     else:
         return jsonify({'error': 'Missing data'}), 400
+
+@client_routes.route('/programs', methods=['POST'])
+def create_health_program():
+    data = request.get_json()
+
+    if isinstance(data, list):
+        # It's a list of programs
+        for program in data:
+            program_name = program.get('program_name')
+            description = program.get('description')
+
+            if not program_name:
+                return jsonify({"error": "Program name is required"}), 400
+
+            add_health_program(program_name, description)
+
+        return jsonify({"message": "Health programs created successfully"}), 201
+    else:
+        # Single program
+        program_name = data.get('program_name')
+        description = data.get('description')
+
+        if not program_name:
+            return jsonify({"error": "Program name is required"}), 400
+
+        add_health_program(program_name, description)
+        return jsonify({"message": "Health program created successfully"}), 201
+
+
+@client_routes.route('/programs/json', methods=['GET'])
+def api_get_health_programs():
+    programs = get_all_health_programs()
+    return jsonify(programs), 200
+
+
