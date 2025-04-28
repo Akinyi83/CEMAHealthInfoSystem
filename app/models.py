@@ -81,3 +81,25 @@ def get_all_enrollments():
     enrollments = cursor.fetchall()
     cursor.close()
     return enrollments
+
+def get_client_by_id(client_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM clients WHERE id = ?', (client_id,))
+    client = cursor.fetchone()
+    conn.close()
+    return client
+
+def get_clients_with_programs():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT clients.id, clients.first_name, clients.last_name, clients.email, GROUP_CONCAT(health_programs.program_name) AS programs
+        FROM clients
+        LEFT JOIN enrollments ON clients.id = enrollments.client_id
+        LEFT JOIN health_programs ON enrollments.program_id = health_programs.id
+        GROUP BY clients.id
+    """)
+    clients = cursor.fetchall()
+    cursor.close()
+    return clients

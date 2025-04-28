@@ -1,0 +1,14 @@
+<h1>Client Profile</h1>
+
+<p><strong>First Name:</strong> {{ client.first_name }}</p>
+<p><strong>Last Name:</strong> {{ client.last_name }}</p>
+<p><strong>Email:</strong> {{ client.email }}</p>
+
+<h2>Enrolled Programs:</h2>
+<ul>
+    {% for program in programs %}
+        <li>{{ program.program_name }} - {{ program.description }}</li>
+    {% else %}
+        <li>No enrolled programs.</li>
+    {% endfor %}
+</ul>

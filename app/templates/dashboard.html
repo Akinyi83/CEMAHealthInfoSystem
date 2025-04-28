@@ -6,11 +6,30 @@
 </head>
 <body>
     <h1>CEMA Health Information System Dashboard</h1>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('client_routes.dashboard') }}">Home</a></li>
+            <li><a href="{{ url_for('client_routes.create_health_program') }}">Create Health Program</a></li>
+            <li><a href="{{ url_for('client_routes.api_get_clients') }}">View Clients</a></li>
+            <li><a href="{{ url_for('client_routes.api_get_health_programs') }}">View Health Programs (JSON)</a></li>
+            <li><a href="{{ url_for('client_routes.create_enrollment') }}">Enroll Client in Program</a></li>
+            <li><a href="{{ url_for('client_routes.search_client') }}">Search for Client</a></li>
+            <li><a href="{{ url_for('client_routes.api_get_enrollments') }}">View Enrollments (JSON)</a></li>
+
+
+        </ul>
+    </nav>
 
     <h2>Registered Clients</h2>
     <ul>
         {% for client in clients %}
-            <li>{{ client.first_name }} {{ client.last_name }} - {{ client.email }}</li>
+        
+            <li>
+                <a href="{{ url_for('client_routes.client_profile', client_id=client.id) }}">
+                {{ client.first_name }} {{ client.last_name }} - {{ client.email }}</a>
+            </li>
+        {% else %}
+            <li>No clients registered yet.</li>    
         {% endfor %}
     </ul>
 </body>

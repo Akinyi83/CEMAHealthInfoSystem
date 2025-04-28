@@ -1,0 +1,11 @@
+<h1>Create Health Program</h1>
+
+<form method="POST" action="{{ url_for('client_routes.create_health_program') }}">
+    <label>Program Name:</label>
+    <input type="text" name="program_name" required><br>
+
+    <label>Description:</label>
+    <textarea name="description"></textarea><br>
+
+    <button type="submit">Create Program</button>
+</form>
