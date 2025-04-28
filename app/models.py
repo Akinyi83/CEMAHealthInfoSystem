@@ -56,3 +56,28 @@ def get_all_health_programs():
     programs = cursor.fetchall()
     cursor.close()
     return programs
+
+# Add a new enrollment
+def add_enrollment(client_id, program_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute(
+        "INSERT INTO enrollments (client_id, program_id) VALUES (%s, %s)",
+        (client_id, program_id)
+    )
+    db.commit()
+    cursor.close()
+
+# Get all enrollments
+def get_all_enrollments():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT enrollments.id, clients.first_name, clients.last_name, health_programs.program_name
+        FROM enrollments
+        JOIN clients ON enrollments.client_id = clients.id
+        JOIN health_programs ON enrollments.program_id = health_programs.id
+    """)
+    enrollments = cursor.fetchall()
+    cursor.close()
+    return enrollments
