@@ -47,43 +47,51 @@ def client_profile(client_id):
 
 
 
-@client_routes.route('/client/search', methods=['GET'])
+@client_routes.route('/client/search', methods=['GET', 'POST'])
 def search_client():
-    query = request.args.get('query', '')
+    
+    if request.method == 'POST':
+        query = request.form.get('search_query', '')
 
-    all_clients = get_all_clients()
-    all_enrollments = get_all_enrollments()
-    all_programs = get_all_health_programs()
+        all_clients = get_all_clients()
+        all_enrollments = get_all_enrollments()
+        all_programs = get_all_health_programs()
+        print("DEBUG: all_enrollments =", all_enrollments)
 
-    # Build a mapping: program_id -> program_name
-    program_dict = {program['id']: program['program_name'] for program in all_programs}
+        # Build a mapping: program_id -> program_name
+        program_dict = {program['id']: program['program_name'] for program in all_programs}
 
-    results = []
+        results = []
 
-    for client in all_clients:
-        if (query.lower() in client['first_name'].lower() or
-            query.lower() in client['last_name'].lower() or
-            query.lower() in client['email'].lower()):
-            
-            # Find the programs this client is enrolled in
-            client_programs = []
-            for enrollment in all_enrollments:
-                if enrollment['client_id'] == client['id']:
-                    program_name = program_dict.get(enrollment['program_id'], "Unknown Program")
-                    client_programs.append(program_name)
+        for client in all_clients:
+            if (query.lower() in client['first_name'].lower() or
+                query.lower() in client['last_name'].lower() or
+                query.lower() in client['email'].lower()):
+                
+                # Find the programs this client is enrolled in
+                client_programs = []
+                for enrollment in all_enrollments:
+                    if str(enrollment.get('client_id')) == str(client['id']):
+                        program_name = program_dict.get(enrollment.get('program_id'), "Unknown Program")
+                        if program_name not in client_programs:
+                            client_programs.append(program_name)
 
-            # Add programs to client info
-            client_with_programs = {
-                'id': client['id'],
-                'first_name': client['first_name'],
-                'last_name': client['last_name'],
-                'email': client['email'],
-                'programs': client_programs
-            }
+                # Add programs to client info
+                client_with_programs = {
+                    'id': client['id'],
+                    'first_name': client['first_name'],
+                    'last_name': client['last_name'],
+                    'email': client['email'],
+                    'programs': client_programs
+                }
 
-            results.append(client_with_programs)
+                results.append(client_with_programs)
 
-    return render_template('search_results.html', query=query, results=results)
+        return render_template('search_results.html', query=query, results=results)
+
+    # For GET request: just show the empty search form!
+    return render_template('search_client_form.html')
+
 
 
 # API endpoint to create health programs (single or list)
@@ -142,20 +150,39 @@ def api_get_health_programs():
     return jsonify(programs), 200
 
 # New route for enrolling a client in a health program
-@client_routes.route('/enrollments', methods=['POST'])
+@client_routes.route('/enrollments', methods=['GET', 'POST'])
 def create_enrollment():
-    data = request.get_json()
-    client_id = data.get('client_id')
-    program_id = data.get('program_id')
+    if request.method == 'POST':
+        if request.is_json:
+            data = request.get_json()
+            client_id = data.get('client_id')
+            program_id = data.get('program_id')
+        else:
+            client_id = request.form.get('client_id')
+            program_id = request.form.get('program_id')
 
-    if client_id and program_id:
-        try:
-            add_enrollment(client_id, program_id)
-            return jsonify({'message': 'Enrollment successful'}), 201
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+            if client_id and program_id:
+                try:
+                   add_enrollment(client_id, program_id)
+                   if request.is_json:
+                       return "Enrollment successful", 201
+                   else:
+                       return "Enrollment successful"
+                except Exception as e:
+                    if request.is_json:
+                        return f"Enrollment failed: {str(e)}", 500
+                    else:
+                        return f"Enrollment failed: {str(e)}"
+            else:
+                    if request.is_json:
+                        return "Missing client_id or program_id", 400
+                    else:
+                        return "Missing client_id or program_id"
     else:
-        return jsonify({'error': 'Missing client_id or program_id'}), 400
+        #Render form for enrolling client
+        clients = get_all_clients()
+        programs = get_all_health_programs()
+        return render_template('enroll_client.html', clients=clients, programs=programs)
 
 @client_routes.route('/enrollments/json', methods=['GET'])
 def api_get_enrollments():

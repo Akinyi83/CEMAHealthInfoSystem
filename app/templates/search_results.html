@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Results for "{{ query }}"</h1>
+
+    {% if results %}
+        <ul>
+        {% for client in results %}
+            <li>
+                {{ client.first_name }} {{ client.last_name }} ({{ client.email }}) - Programs: {{ client.programs | join(", ") }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No clients found matching your search.</p>
+    {% endif %}
+</body>
+</html>
