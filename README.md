@@ -56,3 +56,33 @@ CREATE DATABASE cema_health_system;
 
 python app.py
 
+# API Endpoints
+Endpoint	Method	Description
+/api/clients	GET	Get all clients
+/api/clients	POST	Add a new client
+/api/clients/search?email=	GET	Search client by email
+/api/clients/<client_id>	GET	View client details + enrollments
+/api/programs	GET	Get all health programs
+/api/programs	POST	Add new health program(s)
+/api/enrollments	GET	Get all enrollments
+/api/enrollments	POST	Enroll client into a program
+
+#How to Test
+You can test the API endpoints using tools like:
+
+ Postman: for POST/GET API calls.
+
+ Browser: visit rendered HTML templates.
+
+ Curl: for quick command-line API tests.
+
+# Technologies Used
+Python 3.x
+
+Flask
+
+MySQL
+
+HTML/CSS (Jinja2 templates)
+
+Postman (for testing)
