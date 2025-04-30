@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, jsonify, request, render_template,redirect, url_for
 from .models import get_all_clients, add_client, add_health_program, add_enrollment, get_all_enrollments, get_clients_with_programs, get_client_by_id
 from app.models import get_all_health_programs 
 #from app.db import get_db_connection
@@ -188,3 +188,18 @@ def create_enrollment():
 def api_get_enrollments():
     enrollments = get_all_enrollments()
     return jsonify(enrollments), 200
+
+
+#create client route to Register new client
+@client_routes.route('/clients/new', methods=['GET', 'POST'])
+def create_client():
+    if request.method == 'POST':
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        email = request.form['email']
+        
+        add_client(first_name, last_name, email)  # Call your models.py function
+        return redirect(url_for('client_routes.dashboard'))
+    
+    return render_template('register_client.html')
+

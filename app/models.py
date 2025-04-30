@@ -83,9 +83,9 @@ def get_all_enrollments():
     return enrollments
 
 def get_client_by_id(client_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM clients WHERE id = ?', (client_id,))
+    conn = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM clients WHERE id = %s', (client_id,))
     client = cursor.fetchone()
     conn.close()
     return client
@@ -103,3 +103,22 @@ def get_clients_with_programs():
     clients = cursor.fetchall()
     cursor.close()
     return clients
+
+# Add a new client
+def add_client(first_name, last_name, email):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Check if the email already exists
+    cursor.execute('SELECT * FROM clients WHERE email = %s', (email,))
+    existing_client = cursor.fetchone()
+    
+    if existing_client:
+        # Email already exists, return an error or handle accordingly
+        raise ValueError(f"A client with the email {email} already exists.")
+    
+    # If no duplicate found, proceed with adding the new client
+    cursor.execute('INSERT INTO clients (first_name, last_name, email) VALUES (%s, %s, %s)', (first_name, last_name, email))
+    conn.commit()
+    conn.close()
+
