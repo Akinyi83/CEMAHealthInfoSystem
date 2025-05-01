@@ -6,8 +6,8 @@ This is a lightweight Health Information System built with **Flask**, **MySQL**,
 
 ##  Demo & Slides
 
-- **Video Demo**: [Watch Prototype Demo](https://your-video-link.com)
-- **Project Slides**: [View Slide Presentation](https://your-slide-link.com)
+- **Video Demo**: [Watch Prototype Demo](https://drive.google.com/file/d/14cDvOwrAwktVKSsz21h6z-AB2Oo2DkZp/view?usp=sharing)
+- **Project Slides**: [View Slide Presentation](https://docs.google.com/presentation/d/1nDzr1NNKOfb8RU5uQ9Qwz6DnlCbBurlzQW4wPcOKVwQ/edit?usp=sharing)
 
 ---
 
@@ -58,9 +58,9 @@ python app.py
 
 # API Endpoints
 Endpoint	Method	Description
-/api/clients	GET	Get all clients
+/api/client	GET	Get all clients
 /api/clients	POST	Add a new client
-/api/clients/search?email=	GET	Search client by email
+/api/clients/search?name=	GET	Search client by name
 /api/clients/<client_id>	GET	View client details + enrollments
 /api/programs	GET	Get all health programs
 /api/programs	POST	Add new health program(s)
